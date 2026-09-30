@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flop-key-vault"
+version = "1.0.0"
+authors = [
+  { name="FLOP Technocore Guardians", email="guardians@technocore.chat" },
+]
+description = "Air-gapped Ed25519 identity generation, offline DID inspection, and paper wallet custody."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+dependencies = [
+    "cryptography>=38.0.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/zwf5458/FLOP-Key-Vault"
+"Bug Tracker" = "https://github.com/zwf5458/FLOP-Key-Vault/issues"
+
+[project.scripts]
+flop-vault = "vault.key_vault:main"
+flop-inspect-did = "vault.inspect_did:main"
+flop-paper-wallet = "vault.paper_wallet_generator:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vault*"]
