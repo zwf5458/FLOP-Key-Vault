@@ -1,52 +1,42 @@
-# Security Policy
+# Security & Key Management Policy
 
-## 🔒 Security & Key Hygiene Policy
+## 🔒 Security Standards for FLOP Technocore Key Vault
 
-The **FLOP-Technocore-Kit** project is designed for developers exploring the FLOP Network and Technocore decentralized protocols. Because this project interacts with asymmetric cryptography (Ed25519) and Decentralized Identifiers (DIDs), strict cryptographic hygiene is paramount.
-
----
-
-### 1. Zero-PrivateKey Leakage Guarantee
-
-* **No Secrets Committed**: This repository enforces strict `.gitignore` filters prohibiting any `*.pem`, `*.key`, `*.passphrase`, `.agent_config.json`, or `.env*` credential files.
-* **Separation of Keys**: Developers must **never** commit private identity files (`identity.pem`) or passphrases to version control.
-* **Cold / Hot DID Isolation**: We strongly recommend using separate secondary DIDs for automated 24/7 cloud VPS bots, keeping the primary contributor DID secured in cold storage on local development workstations.
+The **FLOP-Key-Vault** is an offline cryptographic utility engineered for the Arthur Hayes FLOP Network and Technocore decentralized ecosystem. It manages high-value Ed25519 private keys and W3C `did:key` sovereign identities.
 
 ---
 
-### 2. Supported Versions
+### 1. Air-Gapped Key Generation Principles
+
+* **Zero Network Dependency**: None of the tools in `vault/` import network sockets, HTTP clients, or DNS resolution libraries. All derivations (Base58BTC, Multicodec `0xed01`, Ed25519) execute 100% locally.
+* **Strict PKCS#8 Scrypt/AES Encryption**: Private keys are never written to disk in plaintext. All generated keys are encrypted using PKCS#8 format with user-supplied passphrases.
+* **Posix File Permissions**: Newly generated keyfiles are created with atomic `chmod 0600` permissions, restricted solely to the executing user.
+
+---
+
+### 2. Operational Security Directives
+
+1. **Air-Gap Recommendation**: High-value production DIDs should be generated on air-gapped workstations or live boot environments.
+2. **Paper Backup Custody**: Printable custody cards generated via `paper_wallet_generator.py` should be stored in tamper-evident physical safes.
+3. **Automated VPS Bot Segregation**: Do not deploy cold storage master DIDs on 24/7 cloud servers. Use independent ephemeral DIDs for VPS worker nodes.
+
+---
+
+### 3. Supported Versions
 
 | Version | Supported          | Security Status |
 | :---    | :---               | :---            |
-| 1.0.x   | :white_check_mark: | Active Security Maintenance |
-| < 1.0   | :x:                | Deprecated / Not Supported |
+| 1.1.x   | :white_check_mark: | Active Cryptographic Maintenance |
+| 1.0.x   | :white_check_mark: | Legacy Maintenance |
+| < 1.0   | :x:                | Deprecated |
 
 ---
 
-### 3. Threat Model & Best Practices
+### 4. Vulnerability Disclosure & Audit
 
-1. **Passphrase Handling**:
-   - Always load private key decryption passphrases via operating system environment variables (`TECHNOCORE_PASSPHRASE`) or interactive terminal prompts (`getpass.getpass()`).
-   - Never hardcode passphrases in application scripts.
-2. **Replay Attack Mitigation**:
-   - Technocore signatures require strictly monotonic nonces. Always implement monotonic clocks or database-backed sequences to prevent signature replay or transaction reordering.
-3. **Canonical Payloads**:
-   - Technocore signing schemes require stripping of Unicode non-printable characters and canonical room formatting. Failure to normalize messages before signing can lead to message rejection.
+To report cryptographic weaknesses, side-channel vulnerabilities, or entropy concerns:
 
----
-
-### 4. Reporting a Security Vulnerability
-
-If you discover a security vulnerability, an insecure default, or any potential flaw within this developer kit, please **do not open a public GitHub issue**.
-
-Instead, report the issue responsibly:
-* **Primary Contact**: Open an encrypted communication or report directly via Technocore DID:  
-  `did:key:z6MkwBZMeaqfJpg3GPEd4jR719FxNZJmi2YURvxC9bgHozuT`
-* **Email**: Contact the repository maintainer at the email address designated in git commit author metadata.
-
-Please provide:
-1. A description of the vulnerability and attack vector.
-2. Reproducible proof-of-concept steps.
-3. Potential mitigation or patch recommendations if available.
-
-We will acknowledge receipt within 48 hours and work with you on a coordinated public disclosure.
+* **Primary Maintainer DID (Tab 2 bitonekf)**:  
+  `did:key:z6MkoTfkJhMK5deG5fVPLcAlsLNtxhrdsx8p7KsC5g1S58BN`
+* **Maintainer Namespace**: `zwf5458/FLOP-Key-Vault`
+* **Audit Channel**: Technocore Cryptography & Security Working Group. Disclosures will be acknowledged within 24 hours.
